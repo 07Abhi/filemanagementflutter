@@ -24,6 +24,6 @@ class ReadAndWrite {
 
   Future writeData(String data) async {
     File file = await filedata;
-    file.writeAsString(data);
+    file.writeAsString(data, mode: FileMode.append);
   }
 }

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dataclass.dart';
-import 'package:flutter/foundation.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -38,6 +37,7 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _directoryPath = getApplicationDocumentsDirectory();
     });
+    return null;
   }
 
   @override
