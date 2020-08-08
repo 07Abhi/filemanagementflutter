@@ -15,7 +15,8 @@ class ReadAndWrite {
   Future<String> readData() async {
     try {
       File file = await filedata;
-      return file.readAsString();
+      var fileData = await file.readAsString();
+      return fileData;
     } catch (e) {
       return e.toString();
     }

@@ -1,5 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 import 'dataclass.dart';
+import 'package:flutter/foundation.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -10,7 +15,7 @@ class _MyHomePageState extends State<MyHomePage> {
   ReadAndWrite randw = ReadAndWrite();
   final textController = TextEditingController();
   String data;
-  // Future<Directory> _directoryPath;
+  Future<Directory> _directoryPath;
   @override
   void initState() {
     super.initState();
@@ -29,6 +34,12 @@ class _MyHomePageState extends State<MyHomePage> {
     return randw.writeData(data);
   }
 
+  Future _getDirectoryPath() {
+    setState(() {
+      _directoryPath = getApplicationDocumentsDirectory();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,9 +48,9 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Colors.pink,
       ),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Text('$data?? nothing to show right now'),
+          Text(data ?? 'nothing to show right now'),
           TextFormField(
             controller: textController,
             decoration: InputDecoration(
@@ -50,8 +61,36 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
           RaisedButton(
-            onPressed: () {},
+            onPressed: () {
+              getData();
+              SystemChannels.textInput.invokeMethod('TextInput.hide');
+            },
             child: Text('Enter'),
+          ),
+          SizedBox(
+            height: 20.0,
+          ),
+          RaisedButton(
+            onPressed: () => _getDirectoryPath(),
+            child: Text('Get Directory Path'),
+          ),
+          FutureBuilder(
+            future: _directoryPath,
+            builder: (context, snapshot) {
+              var text = Text('');
+              if (snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.hasError) {
+                  text = Text('Error:- ${snapshot.error}');
+                } else if (snapshot.hasData) {
+                  text = Text('Path:- ${snapshot.data}');
+                } else {
+                  text = Text('');
+                }
+              }
+              return Container(
+                child: text,
+              );
+            },
           ),
         ],
       ),
